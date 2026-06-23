@@ -1,0 +1,149 @@
+create virtual environment
+
+Activate the virtual environment
+
+install Django 
+
+pip update
+
+Create Project
+
+Create App
+
+Link app in the setting
+
+Create The urls.py file in the app
+
+Run the migrate command
+
+Create the superuser
+
+run the project
+
+create the models
+
+register the models in admin
+
+login admin panel & add some data
+
+create url path
+
+create the views 
+
+create templates folder
+
+create home.html file and paste the static code
+
+write logic in views and Fetch the data from the database 
+
+Then show the dynamic data on homepage
+
+-------------------------------------------
+CRUD OPERATION PERFORM
+-----------------------
+
+=> add data from the homepage
+-----------------------------
+
+create url path
+
+create views
+
+create add_task.html file and paste the static code
+
+Link add_task page url in header
+
+Templates inheritance
+create base.html
+
+create forms.py
+
+render the form in views
+
+install crispy form
+
+Write the logic to add_task in the database
+
+order_by ('-created_at')
+
+=> edit task
+------------
+
+create url path
+
+create views
+
+create edit_task.html file and paste the static code
+
+Link edit_task page url in edit button
+
+Write the logic to edit_task in the database
+
+
+=> delete task
+---------------
+
+create url path
+
+create views and write the logic to delete task
+
+Link delete_task page url in delete button
+
+
+=> delete all task
+------------------
+
+create url path
+
+create views and write the logic to delete all task
+
+Link delete_all_task page url in clear all Task button
+
+
+=> toggle task
+----------------
+
+create url path
+
+create views and write the logic to toggle task
+
+active toggle task button
+
+
+=> Completed Tasks and Pending Tasks
+-------------------------------------
+
+Fetch the completed task from database
+
+Fetch the Pending task from database
+
+Link completed_tasks page url in home page button
+
+Highlight the button when is active
+
+
+=> Filter Pending Tasks
+------------------------
+
+create url path
+
+create views and write the logic to filter the pending tasks
+
+Link pending_tasks page url in home page button
+
+Highlight the button when that is active
+
+
+-------------------------------------------------------
+
+=> Dynamic Title Every Pages
+
+<title>{% block title %} {% endblock %}</title> (base.html)
+
+<title>{% block title %}Home - Premium Todo App{% endblock %}</title> (home.html)
+
+<title>{% block title %}Add Tasks - Premium Todo App{% endblock %}</title> (add_tasks.html)
+
+<title>{% block title %}Edit Tasks - Premium Todo App{% endblock %}</title> (edit_tasks.html)
+
+

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+<title>{% block title %}Home - Premium Todo App{% endblock %}</title>
+
+{% block content %}
+    
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="mb-8 flex items-center justify-between">
+            <h2 class="text-3xl font-bold text-gray-900 tracking-tight">All Tasks</h2>
+
+            <form method="POST" action="{% url 'delete_all_task' %}" onsubmit="return confirm('Are you sure you want to delete ALL tasks? This cannot be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="text-sm text-red-600 font-semibold hover:underline">Clear All Tasks</button>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-6">
+
+            <div
+                class="bg-emerald-50 border border-emerald-100/80 rounded-2xl p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="p-3 bg-emerald-100/80 text-emerald-600 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-extrabold text-gray-900">{{completed_task}}</h3>
+                    <p class="text-sm font-semibold text-gray-700 mt-1">Completed Tasks</p>
+                </div>
+            </div>
+
+            <div
+                class="bg-orange-50 border border-orange-100/80 rounded-2xl p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="p-3 bg-orange-100/80 text-orange-600 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-extrabold text-gray-900">{{pending_task}}</h3>
+                    <p class="text-sm font-semibold text-gray-700 mt-1">Pending Tasks</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-3 mb-6">
+
+            <a href="{% url 'home' %}"
+                class="px-5 py-2 rounded-full text-sm font-semibold shadow-sm {% if request.path == '/' %} bg-blue-100 text-blue-700 border border-blue-200 {% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
+                All Tasks
+            </a>
+            <a href="{% url 'pending_task' %}"
+                class="px-5 py-2 rounded-full text-sm font-semibold shadow-sm {% if request.path == '/pending-task/' %} bg-blue-100 text-blue-700 border border-blue-200 {% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
+                Pending Tasks
+            </a>
+            <a href="{% url 'completed_task' %}"
+                class="px-5 py-2 rounded-full text-sm font-semibold shadow-sm {% if request.path == '/completed-task/' %} bg-blue-100 text-blue-700 border border-blue-200 {% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
+                Completed Tasks
+            </a>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/80 border-b border-gray-100">
+                            <th class="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Description
+                            </th>
+                            <th class="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Done</th>
+                            <th class="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Created</th>
+                            <th class="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    {% if tasks %}
+                    {% for task in tasks %}
+                    <tbody class="divide-y divide-gray-100">
+                        <!-- Row 1 -->
+                        <tr class="hover:bg-blue-50/30 transition-colors duration-150 group">
+                            <td class="py-4 px-6">
+                                <div class="font-medium text-gray-900">{{task.title}}</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-gray-600">{{task.description}}</div>
+                            </td>
+
+                            <td class="py-4 px-6">
+                                <form method="POST" action="{% url 'toggle_task' task.id %}" class="m-0">
+                                    {% csrf_token %}
+                                    {% if task.completed %}
+                                        <!-- Task Completed Button -->
+                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ease-in-out border shadow-sm active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-1 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:shadow focus:ring-emerald-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                            </svg>
+                                            Done
+                                        </button>
+                                    {% else %}
+                                        <!-- Mark as Complete Button -->
+                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-sm font-semibold border border-gray-300 rounded-full bg-white text-gray-600 transition-all duration-200 ease-in-out hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 active:scale-95">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Mark
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </td>
+
+                            <td class="py-4 px-6 text-gray-600 text-sm">
+                                {{task.created_at|timesince}} ago
+                            </td>
+
+                            <td class="py-4 px-6 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a href="{% url 'edit_task' task.id %}"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium">
+                                        Edit
+                                    </a>
+                                    <a href="{% url 'delete_task' task.id %}"
+                                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium"
+                                        onclick="return confirm('Are you sure you want to delete this task?');">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2 (Optional: to demonstrate what multiple rows look like statically) -->
+                        {% comment %} <tr class="hover:bg-blue-50/30 transition-colors duration-150 group">
+                            <td class="py-4 px-6">
+                                <div class="font-medium text-gray-900">Email Client Updates</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-gray-600">Send out the new project timeline to stakeholders.</div>
+                            </td>
+
+                            <td class="py-4 px-6">
+                                <form method="POST" action="#" class="m-0">
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-sm font-semibold border border-gray-300 rounded-full bg-white text-gray-600 transition-all duration-200 ease-in-out hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 active:scale-95">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        Mark
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td class="py-4 px-6 text-gray-600 text-sm">
+                                1 day ago
+                            </td>
+
+                            <td class="py-4 px-6 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a href="#"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium">
+                                        Edit
+                                    </a>
+                                    <a href="#"
+                                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium"
+                                        onclick="return confirm('Are you sure you want to delete this task?');">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr> {% endcomment %}
+                    </tbody>
+                    {% endfor %}
+                    {% else %}
+
+                    <tr>
+                        <td colspan="5" class="py-8 px-6 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center space-y-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <p class="text-base font-medium">No tasks found.</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endif %}
+
+                </table>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}   
+    
